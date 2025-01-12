@@ -155,13 +155,23 @@
   }
 
   async function toggleCamera() {
-    const sceneName = 'Сцена 3';
+    const sceneName = 'table';
     const data = await sendCommand('GetSceneItemList', {sceneName, sceneItemId: 2})
     console.log(data.sceneItems)
     const enabledId = data.sceneItems.find(item => item.sceneItemEnabled === true).sceneItemId
     const disabledId = data.sceneItems.find(item => item.sceneItemEnabled === false).sceneItemId
     await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: disabledId, sceneItemEnabled: true})
     await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: enabledId, sceneItemEnabled: false})
+  }
+
+  async function setCamera(index) {
+    const firstCam = index === 0;
+    const sceneName = 'table';
+    const data = await sendCommand('GetSceneItemList', {sceneName, sceneItemId: 2})
+    const camera1 = data.sceneItems.find(item => item.sceneItemIndex === 0).sceneItemId
+    const camera2 = data.sceneItems.find(item => item.sceneItemIndex === 1).sceneItemId
+    await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: camera1, sceneItemEnabled: firstCam})
+    await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: camera2, sceneItemEnabled: !firstCam})
   }
 
   async function toggleStudioMode () {
@@ -345,11 +355,22 @@
     .catch(err => console.log(err));
 
   function listenMidi() {
-    const input = WebMidi.getInputByName("MPKmini2");
+    const controllerName = "Akai MPD32";
+    const input = WebMidi.getInputByName(controllerName);
     if (input) {
       input.addListener("noteon", (e) => {
-        console.log(e, e.note.identifier);
-        toggleCamera();
+        console.log(e.note.identifier);
+        switch (e.note.identifier) {
+          case 'C2': // pad 1
+            setCamera(0);
+            break;
+          case 'C#2': // pad 2
+            setCamera(1);
+            break;
+          case 'D#2': // pad 4
+            toggleCamera();
+            break;
+        }
       })
     } else {
       console.log("NO MIDI CONTROLLER");
