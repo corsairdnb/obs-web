@@ -91,6 +91,8 @@
       await connect()
     }
 
+    await connect() // TODO: called only when no password
+
     // Export the sendCommand() function to the window object
     window.sendCommand = sendCommand
   })
@@ -114,6 +116,7 @@
   let imageFormat = 'jpg'
   let isSaveReplay = false
   let isSaveReplayDisabled = false
+  const sceneName = 'table';
 
   $: isSceneOnTop
     ? window.localStorage.setItem('isSceneOnTop', 'true')
@@ -155,9 +158,8 @@
   }
 
   async function toggleCamera() {
-    const sceneName = 'table';
     const data = await sendCommand('GetSceneItemList', {sceneName, sceneItemId: 2})
-    console.log(data.sceneItems)
+    // console.log(data.sceneItems)
     const enabledId = data.sceneItems.find(item => item.sceneItemEnabled === true).sceneItemId
     const disabledId = data.sceneItems.find(item => item.sceneItemEnabled === false).sceneItemId
     await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: disabledId, sceneItemEnabled: true})
@@ -166,12 +168,15 @@
 
   async function setCamera(index) {
     const firstCam = index === 0;
-    const sceneName = 'table';
+    const secondCam = index === 1;
+    const thirdCam = index === 2;
     const data = await sendCommand('GetSceneItemList', {sceneName, sceneItemId: 2})
     const camera1 = data.sceneItems.find(item => item.sceneItemIndex === 0).sceneItemId
     const camera2 = data.sceneItems.find(item => item.sceneItemIndex === 1).sceneItemId
+    const camera3 = data.sceneItems.find(item => item.sceneItemIndex === 2).sceneItemId
     await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: camera1, sceneItemEnabled: firstCam})
-    await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: camera2, sceneItemEnabled: !firstCam})
+    await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: camera2, sceneItemEnabled: secondCam})
+    await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: camera3, sceneItemEnabled: thirdCam})
   }
 
   async function toggleStudioMode () {
@@ -635,8 +640,11 @@
   <div class="container">
 
     {#if connected}
-      <div style="text-align: center; margin: 20px 0;">
-        <button on:click={toggleCamera} style="font-size: 50px;">TOGGLE CAMERA</button>
+      <div class="pads">
+        <button on:click={() => setCamera(0)} class="pad pad--cam1">1</button>
+        <button on:click={() => setCamera(1)} class="pad pad--cam2">2</button>
+        <button on:click={() => setCamera(2)} class="pad pad--cam3">3</button>
+        <button on:click={toggleCamera} class="pad pad--toggle">1 ⇆ 2</button>
       </div>
     {/if}
 
@@ -752,3 +760,21 @@
     </p>
   </div>
 </footer>
+
+<style>
+  .pads {
+    width: 50vw;
+    margin: 20px auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+    gap: 10px;
+    justify-items: center;
+  }
+  .pad {
+    aspect-ratio: 1 / 1;
+    font-size: 3vw;
+    max-width: 10vw;
+    font-weight: bold;
+  }
+</style>

@@ -22,7 +22,7 @@
   on:click={() => dispatch('click')}
   style={buttonStyle === 'icon' ? style : ''}
   title={name}
-  >
+>
   {#if img}<img src={img} alt={name} class="thumbnail" />{/if}
   {#if buttonStyle !== 'icon'}{name}{/if}
 </button>
@@ -53,14 +53,14 @@
     height: 64px;
     width: 64px;
     box-shadow: 2px 2px 5px gray;
-    margin: .5em;
+    margin: 0.5em;
     border-radius: 5px;
     cursor: pointer;
     background: white no-repeat center center / cover;
     position: relative;
   }
   button.with-icon.program::before {
-    content: " ";
+    content: ' ';
     position: absolute;
     top: -5px;
     right: -5px;

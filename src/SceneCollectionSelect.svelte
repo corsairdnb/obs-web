@@ -22,15 +22,21 @@
     collections = data.sceneCollections || []
   })
 
-  async function setCurrentCollection (event) {
-    sendCommand('SetCurrentSceneCollection', { sceneCollectionName: event.target.value })
+  async function setCurrentCollection(event) {
+    sendCommand('SetCurrentSceneCollection', {
+      sceneCollectionName: event.target.value
+    })
   }
 </script>
 
 <div class="select" style="margin: 0 .5rem .5rem 0;">
-  <select bind:value={currentCollection} title="Change Collection" on:change={setCurrentCollection}>
-  {#each collections as collection}
-    <option value={collection}>{collection}</option>
-  {/each}
+  <select
+    bind:value={currentCollection}
+    title="Change Collection"
+    on:change={setCurrentCollection}
+  >
+    {#each collections as collection}
+      <option value={collection}>{collection}</option>
+    {/each}
   </select>
 </div>

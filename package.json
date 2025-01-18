@@ -20,6 +20,8 @@
     "mdi-svelte": "^1.1.2",
     "obs-websocket-js": "^5.0.1",
     "postcss": "^8.4.49",
+    "prettier": "^3.4.2",
+    "prettier-plugin-svelte": "^3.3.3",
     "rollup": "^4",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-polyfill-node": "^0.13.0",

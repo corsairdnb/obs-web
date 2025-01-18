@@ -2,7 +2,7 @@ import OBSWebSocket from 'obs-websocket-js'
 
 export const obs = new OBSWebSocket()
 
-export async function sendCommand (command, params) {
+export async function sendCommand(command, params) {
   try {
     // if (command.indexOf('Set') === 0)
     //  console.log('Sending command:', command, 'with params:', params)
@@ -13,6 +13,6 @@ export async function sendCommand (command, params) {
   }
 }
 
-obs.on('error', err => {
+obs.on('error', (err) => {
   console.error('Socket error:', err)
 })

@@ -15,7 +15,7 @@
     await refreshItems()
   })
 
-  async function refreshItems () {
+  async function refreshItems() {
     const data = await sendCommand('GetSceneItemList', { sceneName: name })
     items = data.sceneItems || items
     for (let i = 0; i < items.length; i++) {
@@ -67,7 +67,7 @@
     }
   })
 
-  function backgroundClicker (itemId) {
+  function backgroundClicker(itemId) {
     return async function () {
       await sendCommand('SetSceneItemEnabled', {
         sceneName: name,
@@ -85,13 +85,15 @@
     }
   }
 
-  async function getItemScreenshot (item) {
+  async function getItemScreenshot(item) {
     if (item.img) return item.img
     let data = null
     let retry = item.sceneItemEnabled ? 3 : 1
     while (retry--) {
       // Random sleep to avoid burst of thumbnail rendering
-      await new Promise((resolve) => setTimeout(resolve, Math.random() * 500 + 100))
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.random() * 500 + 100)
+      )
       data = await sendCommand('GetSourceScreenshot', {
         sourceName: item.sourceName,
         imageFormat,
@@ -104,7 +106,7 @@
     }
   }
 
-  async function loadMissingScreenshots () {
+  async function loadMissingScreenshots() {
     for (let i = 0; i < items.length; i++) {
       if (!items[i].img) {
         await sendCommand('SetSceneItemEnabled', {
@@ -120,17 +122,20 @@
 
 <ol>
   {#each items as item}
-  <li>
-    <SourceButton name={item.sourceName}
-      on:click={backgroundClicker(item.sceneItemId)}
-      isProgram={item.sceneItemEnabled}
-      img={item.img}
-      buttonStyle={buttonStyle}
-    />
-  </li>
+    <li>
+      <SourceButton
+        name={item.sourceName}
+        on:click={backgroundClicker(item.sceneItemId)}
+        isProgram={item.sceneItemEnabled}
+        img={item.img}
+        {buttonStyle}
+      />
+    </li>
   {/each}
 </ol>
-<button class="button" on:click={loadMissingScreenshots}>Load missing thumbnails</button>
+<button class="button" on:click={loadMissingScreenshots}
+  >Load missing thumbnails</button
+>
 
 <style>
   ol {
@@ -138,7 +143,7 @@
     display: flex;
     flex-wrap: wrap;
     align-content: space-between;
-    gap: .5rem;
+    gap: 0.5rem;
     margin-bottom: 2rem;
   }
   li {

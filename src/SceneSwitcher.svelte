@@ -11,9 +11,13 @@
 
   let scenesFiltered = []
   let isStudioMode = false
-  const sceneIcons = JSON.parse(window.localStorage.getItem('sceneIcons') || '{}')
+  const sceneIcons = JSON.parse(
+    window.localStorage.getItem('sceneIcons') || '{}'
+  )
 
-  $: scenesFiltered = scenes.filter((scene) => scene.sceneName.indexOf('(hidden)') === -1).reverse()
+  $: scenesFiltered = scenes
+    .filter((scene) => scene.sceneName.indexOf('(hidden)') === -1)
+    .reverse()
   // store sceneIcons on change
   $: window.localStorage.setItem('sceneIcons', JSON.stringify(sceneIcons))
 
@@ -75,50 +79,68 @@
     previewScene = data.sceneName
   })
 
-  function sceneClicker (scene) {
+  function sceneClicker(scene) {
     return async function () {
       if (isStudioMode) {
-        await sendCommand('SetCurrentPreviewScene', { sceneName: scene.sceneName })
+        await sendCommand('SetCurrentPreviewScene', {
+          sceneName: scene.sceneName
+        })
       } else {
-        await sendCommand('SetCurrentProgramScene', { sceneName: scene.sceneName })
+        await sendCommand('SetCurrentProgramScene', {
+          sceneName: scene.sceneName
+        })
       }
     }
   }
 
-  function onNameChange (event) {
-    sendCommand('SetSceneName', { sceneName: event.target.title, newSceneName: event.target.value })
+  function onNameChange(event) {
+    sendCommand('SetSceneName', {
+      sceneName: event.target.title,
+      newSceneName: event.target.value
+    })
   }
-  function onIconChange (event) {
+  function onIconChange(event) {
     sceneIcons[event.target.title] = event.target.value
   }
 </script>
 
-<ol
-  class:column={editable}
-  class:with-icon={buttonStyle === 'icon'}
-  >
+<ol class:column={editable} class:with-icon={buttonStyle === 'icon'}>
   {#if editable}
     {#each scenes.reverse() as scene}
-    <li>
-      <!-- svelte-ignore a11y-label-has-associated-control -->
-      <label class="label">Name</label>
-      <input type="text" class="input" title={scene.sceneName} value={scene.sceneName} on:change={onNameChange} />
-      <!-- svelte-ignore a11y-label-has-associated-control -->
-      <label class="label">Icon</label>
-      <input type="text" class="input" title={scene.sceneName} value={sceneIcons[scene.sceneName] || ''} on:change={onIconChange} />
-    </li>
+      <li>
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label class="label">Name</label>
+        <input
+          type="text"
+          class="input"
+          title={scene.sceneName}
+          value={scene.sceneName}
+          on:change={onNameChange}
+        />
+        <!-- svelte-ignore a11y-label-has-associated-control -->
+        <label class="label">Icon</label>
+        <input
+          type="text"
+          class="input"
+          title={scene.sceneName}
+          value={sceneIcons[scene.sceneName] || ''}
+          on:change={onIconChange}
+        />
+      </li>
     {/each}
   {:else}
     {#each scenesFiltered as scene}
-    <li>
-      <SourceButton name={scene.sceneName}
-        on:click={sceneClicker(scene)}
-        isProgram={programScene === scene.sceneName}
-        isPreview={previewScene === scene.sceneName}
-        buttonStyle={buttonStyle}
-        icon={sceneIcons[scene.sceneName] || `#${Math.floor(Math.random() * 16777215).toString(16)}`}
-      />
-    </li>
+      <li>
+        <SourceButton
+          name={scene.sceneName}
+          on:click={sceneClicker(scene)}
+          isProgram={programScene === scene.sceneName}
+          isPreview={previewScene === scene.sceneName}
+          {buttonStyle}
+          icon={sceneIcons[scene.sceneName] ||
+            `#${Math.floor(Math.random() * 16777215).toString(16)}`}
+        />
+      </li>
     {/each}
   {/if}
 </ol>
@@ -129,7 +151,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: .5rem;
+    gap: 0.5rem;
     margin-bottom: 2rem;
   }
   ol.column {

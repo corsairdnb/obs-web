@@ -70,7 +70,7 @@
     transitions = data.transitions || []
   })
 
-  async function getScreenshot () {
+  async function getScreenshot() {
     if (!programScene) return
     let data = await sendCommand('GetSourceScreenshot', {
       sourceName: programScene,
@@ -106,16 +106,20 @@
     </div>
     <div class="column is-narrow">
       {#each transitions as transition}
-      <button class="button is-fullwidth is-info" style="margin-bottom: .5rem;"
-        on:click={async () => {
-          await sendCommand('SetCurrentSceneTransition', { transitionName: transition.transitionName })
-          await sendCommand('TriggerStudioModeTransition')
-        }}
-        >{transition.transitionName}</button>
+        <button
+          class="button is-fullwidth is-info"
+          style="margin-bottom: .5rem;"
+          on:click={async () => {
+            await sendCommand('SetCurrentSceneTransition', {
+              transitionName: transition.transitionName
+            })
+            await sendCommand('TriggerStudioModeTransition')
+          }}>{transition.transitionName}</button
+        >
       {/each}
     </div>
   {/if}
   <div class="column">
-    <img bind:this={program} alt="Program"/>
+    <img bind:this={program} alt="Program" />
   </div>
 </div>

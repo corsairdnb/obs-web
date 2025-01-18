@@ -20,15 +20,19 @@
     profiles = data.profiles || []
   })
 
-  async function setCurrentProfile (event) {
+  async function setCurrentProfile(event) {
     sendCommand('SetCurrentProfile', { profileName: event.target.value })
   }
 </script>
 
 <div class="select" style="margin: 0 .5rem .5rem 0;">
-  <select bind:value={currentProfile} title="Change Profile" on:change={setCurrentProfile}>
-  {#each profiles as profile}
-    <option value={profile}>{profile}</option>
-  {/each}
+  <select
+    bind:value={currentProfile}
+    title="Change Profile"
+    on:change={setCurrentProfile}
+  >
+    {#each profiles as profile}
+      <option value={profile}>{profile}</option>
+    {/each}
   </select>
 </div>
