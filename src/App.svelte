@@ -372,6 +372,9 @@
           case 'C#2': // pad 2
             setCamera(1);
             break;
+          case 'D2': // pad 3
+            setCamera(2);
+            break;
           case 'D#2': // pad 4
             toggleCamera();
             break;
@@ -379,9 +382,9 @@
       })
     } else {
       console.log("NO MIDI CONTROLLER");
+      alert("Не обнаружен MIDI-контроллер. Попробуйте переподключить или закрыть/открыть Reaper.")
     }
   }
-
 
   let midi = null; // global MIDIAccess object
 
