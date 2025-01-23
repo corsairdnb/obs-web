@@ -157,11 +157,18 @@
     }
   }
 
+  const cam1 = 'cam1'
+  const cam2 = 'cam2'
+
+  function isCameraSourceName(name) {
+    return [cam1, cam2].includes(name)
+  }
+
   async function toggleCamera() {
     const data = await sendCommand('GetSceneItemList', {sceneName, sceneItemId: 2})
-    // console.log(data.sceneItems)
-    const enabledId = data.sceneItems.find(item => item.sceneItemEnabled === true).sceneItemId
-    const disabledId = data.sceneItems.find(item => item.sceneItemEnabled === false).sceneItemId
+    console.log(data.sceneItems)
+    const enabledId = data.sceneItems.find(item => item.sceneItemEnabled === true && isCameraSourceName(item.sourceName)).sceneItemId
+    const disabledId = data.sceneItems.find(item => item.sceneItemEnabled === false && isCameraSourceName(item.sourceName)).sceneItemId
     await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: disabledId, sceneItemEnabled: true})
     await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: enabledId, sceneItemEnabled: false})
   }
@@ -169,14 +176,11 @@
   async function setCamera(index) {
     const firstCam = index === 0;
     const secondCam = index === 1;
-    const thirdCam = index === 2;
     const data = await sendCommand('GetSceneItemList', {sceneName, sceneItemId: 2})
-    const camera1 = data.sceneItems.find(item => item.sceneItemIndex === 0).sceneItemId
-    const camera2 = data.sceneItems.find(item => item.sceneItemIndex === 1).sceneItemId
-    const camera3 = data.sceneItems.find(item => item.sceneItemIndex === 2).sceneItemId
+    const camera1 = data.sceneItems.find(item => item.sceneItemIndex === 0 && isCameraSourceName(item.sourceName)).sceneItemId
+    const camera2 = data.sceneItems.find(item => item.sceneItemIndex === 1 && isCameraSourceName(item.sourceName)).sceneItemId
     await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: camera1, sceneItemEnabled: firstCam})
     await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: camera2, sceneItemEnabled: secondCam})
-    await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: camera3, sceneItemEnabled: thirdCam})
   }
 
   async function toggleStudioMode () {
@@ -321,7 +325,7 @@
       const recording = await sendCommand('GetRecordStatus')
       heartbeat = { stats, streaming, recording }
       // console.log(heartbeat);
-    }, 1000) // Heartbeat
+    }, 300) // Heartbeat
     isStudioMode =
       (await sendCommand('GetStudioModeEnabled')).studioModeEnabled || false
     isVirtualCamActive =
@@ -434,7 +438,7 @@
   <title>OBS-web remote control</title>
 </svelte:head>
 
-<nav class="navbar is-primary" aria-label="main navigation">
+<nav class="navbar is-primary" aria-label="main navigation" style="display: none;">
   <div class="navbar-brand">
     <a class="navbar-item is-size-4 has-text-weight-bold" href="/">
       <img src="favicon.png" alt="OBS-web" class="rotate" /></a
@@ -640,29 +644,29 @@
 </nav>
 
 <section class="section">
-  <div class="container">
+  <div>
 
     {#if connected}
       <div class="pads">
         <button on:click={() => setCamera(0)} class="pad pad--cam1">1</button>
         <button on:click={() => setCamera(1)} class="pad pad--cam2">2</button>
-        <button on:click={() => setCamera(2)} class="pad pad--cam3">3</button>
+        <button class="pad pad--cam3">3</button>
         <button on:click={toggleCamera} class="pad pad--toggle">1 ⇆ 2</button>
       </div>
     {/if}
 
     {#if connected}
-      {#if isSceneOnTop}
-        <ProgramPreview {imageFormat} />
-      {/if}
+      <!--{#if isSceneOnTop}-->
+      <!--  <ProgramPreview {imageFormat} />-->
+      <!--{/if}-->
 <!--      <SceneSwitcher-->
 <!--        bind:scenes-->
 <!--        buttonStyle={isIconMode ? 'icon' : 'text'}-->
 <!--        {editable}-->
 <!--      />-->
-      {#if !isSceneOnTop}
-        <ProgramPreview {imageFormat} />
-      {/if}
+<!--      {#if !isSceneOnTop}-->
+<!--        <ProgramPreview {imageFormat} />-->
+<!--      {/if}-->
       {#each scenes as scene}
         {#if scene.sceneName.indexOf('(switch)') > 0}
           <SourceSwitcher
@@ -751,22 +755,21 @@
   </div>
 </section>
 
-<footer class="footer">
-  <div class="content has-text-centered">
-    <p>
-      <strong>OBS-web</strong>
-      by
-      <a href="https://niekvandermaas.nl/">Niek van der Maas</a>
-      &mdash; see
-      <a href="https://github.com/Niek/obs-web">GitHub</a>
-      for source code.
-    </p>
-  </div>
-</footer>
+<!--<footer class="footer">-->
+<!--  <div class="content has-text-centered">-->
+<!--    <p>-->
+<!--      <strong>OBS-web</strong>-->
+<!--      by-->
+<!--      <a href="https://niekvandermaas.nl/">Niek van der Maas</a>-->
+<!--      &mdash; see-->
+<!--      <a href="https://github.com/Niek/obs-web">GitHub</a>-->
+<!--      for source code.-->
+<!--    </p>-->
+<!--  </div>-->
+<!--</footer>-->
 
 <style>
   .pads {
-    width: 50vw;
     margin: 20px auto;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -776,8 +779,9 @@
   }
   .pad {
     aspect-ratio: 1 / 1;
-    font-size: 3vw;
-    max-width: 10vw;
+    font-size: 5vw;
+    width: 20vw;
+    height: 20vw;
     font-weight: bold;
   }
 </style>
