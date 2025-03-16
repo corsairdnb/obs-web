@@ -166,7 +166,7 @@
 
   async function toggleCamera() {
     const data = await sendCommand('GetSceneItemList', {sceneName, sceneItemId: 2})
-    console.log(data.sceneItems)
+    // console.log(data.sceneItems)
     const enabledId = data.sceneItems.find(item => item.sceneItemEnabled === true && isCameraSourceName(item.sourceName)).sceneItemId
     const disabledId = data.sceneItems.find(item => item.sceneItemEnabled === false && isCameraSourceName(item.sourceName)).sceneItemId
     await sendCommand('SetSceneItemEnabled', {sceneName, sceneItemId: disabledId, sceneItemEnabled: true})
@@ -432,6 +432,31 @@
   //   });
   // }
 
+  function handleKeyPress(event) {
+    const key = Number(event.key);
+
+    if (key >= 0 && key <= 9) {
+      switch (key) {
+        case 1:
+          setCamera(0);
+          document.querySelector('#pad1').focus()
+          break;
+        case 2:
+          setCamera(1);
+          document.querySelector('#pad2').focus()
+          break;
+        // case 3:
+        //   setCamera(2);
+        //   break;
+        case 4:
+          document.querySelector('#pad4').focus()
+          toggleCamera()
+      }
+    }
+  }
+
+  document.addEventListener('keydown', handleKeyPress);
+
 </script>
 
 <svelte:head>
@@ -647,11 +672,11 @@
   <div>
 
     {#if connected}
-      <div class="pads">
-        <button on:click={() => setCamera(0)} class="pad pad--cam1">1</button>
-        <button on:click={() => setCamera(1)} class="pad pad--cam2">2</button>
+      <div class="pads" id="pads">
+        <button on:click={() => setCamera(0)} class="pad pad--cam1" id="pad1">1</button>
+        <button on:click={() => setCamera(1)} class="pad pad--cam2" id="pad2">2</button>
         <button class="pad pad--cam3">3</button>
-        <button on:click={toggleCamera} class="pad pad--toggle">1 ⇆ 2</button>
+        <button on:click={toggleCamera} class="pad pad--toggle" id="pad4">1 ⇆ 2</button>
       </div>
     {/if}
 
@@ -783,5 +808,8 @@
     width: 20vw;
     height: 20vw;
     font-weight: bold;
+  }
+  .pad:focus-visible {
+    outline: 5px solid #84af00;
   }
 </style>
