@@ -16,3 +16,53 @@ $footer-padding: 3rem 1.5rem;
 .rotate {
   animation: rotating 10s linear infinite;
 }
+
+.pads {
+  margin: 20px auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+  gap: 10px;
+  justify-items: center;
+}
+
+.pad {
+  aspect-ratio: 1 / 1;
+  font-size: 5vw;
+  width: 20vw;
+  height: 20vw;
+  font-weight: bold;
+
+  &:active,
+  &:focus-within,
+  &:focus-visible {
+    outline: 5px solid #84af00;
+  }
+}
+
+.controls {
+  display: flex;
+  padding: 10px;
+  font-size: 0;
+  line-height: 0;
+  align-items: flex-end;
+}
+
+#timer-label {
+  margin: 0 0 0 10px;
+  font-weight: bold;
+  font-size: 1.5vw;
+  line-height: 3.5vw;
+}
+
+#timer-checkbox {
+  width: 50px;
+  height: 50px;
+}
+
+#timer-value {
+  margin: 0;
+  padding: 0 1vw;
+  height: 50px;
+  font-size: 3vw;
+}

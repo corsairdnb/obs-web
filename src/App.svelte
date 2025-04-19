@@ -118,6 +118,8 @@
   let isSaveReplayDisabled = false
   const sceneName = 'table';
 
+  let timerDisabled = true
+
   $: isSceneOnTop
     ? window.localStorage.setItem('isSceneOnTop', 'true')
     : window.localStorage.removeItem('isSceneOnTop')
@@ -435,6 +437,10 @@
   function handleKeyPress(event) {
     const key = Number(event.key);
 
+    if (document.querySelector('#timer-value:focus-within')) {
+      return
+    }
+
     if (key >= 0 && key <= 9) {
       switch (key) {
         case 1:
@@ -456,6 +462,38 @@
   }
 
   document.addEventListener('keydown', handleKeyPress);
+
+  const toggleTimerDisabled = (event) => {
+    timerDisabled = !event.target.checked
+    if (timerDisabled) {
+      toggleTimer(false)
+    } else {
+      toggleTimer(true)
+    }
+  }
+
+  let timerInterval = null
+
+  const toggleTimer = (active = true) => {
+    const input = document.querySelector('#timer-value')
+    let value = Math.round(input.value || 0)
+    if (value <= 1) {
+      value = 1
+    } else if (value > 9999) {
+      value = 9999
+    }
+    input.value = value
+    const enabled = active && value && value > 0
+    if (enabled) {
+      clearInterval(timerInterval)
+      timerInterval = setInterval(() => {
+        toggleCamera()
+        console.log(1)
+      }, value * 1000)
+    } else {
+      clearInterval(timerInterval)
+    }
+  }
 
 </script>
 
@@ -672,6 +710,15 @@
   <div>
 
     {#if connected}
+      <div class="controls">
+        <label for="timer-checkbox">
+          <input type="checkbox" id="timer-checkbox" on:click={toggleTimerDisabled}>
+        </label>
+        <label for="timer-value" id="timer-label">
+          Автопереключение, сек<br />
+          <input type="number" id="timer-value" disabled={timerDisabled} max="9999" min="1" step="1" value="10" on:change={toggleTimer}>
+        </label>
+      </div>
       <div class="pads" id="pads">
         <button on:click={() => setCamera(0)} class="pad pad--cam1" id="pad1">1</button>
         <button on:click={() => setCamera(1)} class="pad pad--cam2" id="pad2">2</button>
@@ -792,24 +839,3 @@
 <!--    </p>-->
 <!--  </div>-->
 <!--</footer>-->
-
-<style>
-  .pads {
-    margin: 20px auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(1, 1fr);
-    gap: 10px;
-    justify-items: center;
-  }
-  .pad {
-    aspect-ratio: 1 / 1;
-    font-size: 5vw;
-    width: 20vw;
-    height: 20vw;
-    font-weight: bold;
-  }
-  .pad:focus-visible {
-    outline: 5px solid #84af00;
-  }
-</style>
