@@ -48,21 +48,27 @@ $footer-padding: 3rem 1.5rem;
   align-items: flex-end;
 }
 
+.timer-hint {
+  font-size: 1.5vw;
+  line-height: 1;
+  margin: 0 0 0 10px;
+}
+
 #timer-label {
   margin: 0 0 0 10px;
   font-weight: bold;
   font-size: 1.5vw;
-  line-height: 3.5vw;
+  line-height: 0;
 }
 
 #timer-checkbox {
   width: 50px;
-  height: 50px;
+  height: 60px;
 }
 
 #timer-value {
   margin: 0;
-  padding: 0 1vw;
-  height: 50px;
-  font-size: 3vw;
+  padding: 0 15px;
+  height: 60px;
+  font-size: 32px;
 }

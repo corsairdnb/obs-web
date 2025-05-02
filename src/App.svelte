@@ -710,12 +710,12 @@
   <div>
 
     {#if connected}
+      <div class="timer-hint">Автопереключение, сек</div>
       <div class="controls">
         <label for="timer-checkbox">
           <input type="checkbox" id="timer-checkbox" on:click={toggleTimerDisabled}>
         </label>
         <label for="timer-value" id="timer-label">
-          Автопереключение, сек<br />
           <input type="number" id="timer-value" disabled={timerDisabled} max="9999" min="1" step="1" value="10" on:change={toggleTimer}>
         </label>
       </div>
